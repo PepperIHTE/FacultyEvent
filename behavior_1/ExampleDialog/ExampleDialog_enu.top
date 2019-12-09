@@ -1,0 +1,52 @@
+topic: ~ExampleDialog()
+language: enu
+
+# Defining needed concepts, keywords or sentences corresponding to a concept.
+concept:(q1_1) ["have you ever been interviewed by a robot?"]
+concept:(do_handshake) "^pCall(Daps.dap('rhandshake', 5, 9))"
+concept: (yes) ["yes" "of course" "yeah" "yo" "let's do it"]
+concept:(q1_2) ["How does it feel?"]
+concept:(q2) ["What are we going to do today?"]
+concept:(q3) ["What else do you want to say to the I T C people?"]
+concept:(q4) ["How did I manage in interviewing you?"]
+concept:(q5) ["Do you think I can replace deans in future"]
+concept:(thx) ["thank you so much Yurki"]
+concept:(failure) ["may be later"]
+concept:(no) ["no" "na" "may be later" "not now"]
+concept: (success) ["Welcome to the interview with Pepper"]
+concept: (progress) ["You can shake hands with me"]
+concept: (closing) ["$showImage=Closing_words_1.png $orientation/preload="Closing_words_1.png" Did you notice that I needed a whole team to assist me in making this interview. \pau=300\  A person to program me, \pau=300\ a big van with a car driver, \pau=300\ persons who carried me here, \pau=300\$showImage=Closing_words_2.png $orientation/preload="Closing_words_2.png" a person to hold microphone, \pau=300\ and a person to operate me. \pau=300\ Thanks team for making this possible! \pau=300\ By the way, \pau=300\ later on you can meet me \pau=300\ and other robots at the meeting point.\pau=500\ $showImage=End.png $orientation/preload="End.png" Enjoy the rest of the event everyone"]
+
+u:(e:onStart) $orientation/preload="faculty_event_greetings_1.png" $showImage=faculty_event_greetings_1.png \rspd=90\ Hello everyone \pau=300\ and welcome to the event of faculty of information technology and communication sciences. ^startTag(hi) \pau=500\ $orientation/preload="faculty_event_greetings_2.png" $showImage=faculty_event_greetings_2.png I am Pepper \pau=300\  
+and  I am here to replace humans. You see ^run(animations/Stand/Gestures/No_2) we don't need interviewers anymore ^wait(animations/Stand/Gestures/No_2). \pau=300\ I will now interview our dean \pau=300\ yurki vuorinen \pau=300\ ^gotoReactivate(handshake)
+
+proposal: %handshake "Nice to meet you ~do_handshake"
+     u1:(e:Daps/Failure) "^mode(disabled) ~failure \PAU=500\ " $Daps/Done=1 ^gotoReactivate(first_question)
+     u1:(e:Daps/Success) "^mode(disabled) $orientation/preload="faculty_event_greetings_3.png" $showImage=faculty_event_greetings_3.png \PAU=500\ ~success  " $Daps/Done=1 ^gotoReactivate(first_question)
+     u1:(e:Daps/Warning) "^mode(disabled) ~progress " ^stayInScope
+     u1:("$Daps/InProgress<>0 *") ^stayInScope
+
+proposal:$orientation/preload="Q1.png" $showImage=Q1.png  \rspd=90\ %first_question ~q1_1  
+ u1:([e:RightBumperPressed e:LeftBumperPressed e:BackBumperPressed])^gotoReactivate(second_part)
+ 
+proposal: $orientation/preload="Q1_2.png" $showImage=Q1_2.png \rspd=90\ %second_part ~q1_2 
+ u1: ([e:RightBumperPressed e:LeftBumperPressed e:BackBumperPressed]) ^gotoReactivate(second_question)
+ 
+proposal: $showImage=Q2.png $orientation/preload="Q2.png" \rspd=90\ %second_question ~q2
+ u1: ([e:RightBumperPressed e:LeftBumperPressed e:BackBumperPressed]) ^gotoReactivate(third_question)
+ 
+proposal: $showImage=Q3.png $orientation/preload="Q3.png" \rspd=90\ %third_question ~q3
+ u1: ([e:RightBumperPressed e:LeftBumperPressed e:BackBumperPressed]) ^gotoReactivate(fourth_question)
+ 
+proposal: $showImage=Q4.png $orientation/preload="Q4.png" \rspd=90\ %fourth_question ~q4
+ u1: ([e:RightBumperPressed e:LeftBumperPressed e:BackBumperPressed])^gotoReactivate(fifth_question)
+
+proposal: $showImage=Q5.png $orientation/preload="Q5.png" \rspd=90\ %fifth_question ~q5 ^run(boston_animation_library/Stand/little_laugh)
+ u1: ([e:RightBumperPressed e:LeftBumperPressed e:BackBumperPressed]) ^gotoReactivate(closing_words)
+ 
+proposal: \rspd=90\ %closing_words ~thx \pau=300\ ~closing \pau=300\ one last thing, ^run(boston_animation_library/Stand/rm_goodbyebow) would you like to dance with me?  
+  u1: (~yes) Alright, lets dance ^run(date_dance-cb4ef4) $onStopped=1
+  u1:(~no) Okay \pau=300\ have a great day $onStopped=1
+
+
+  
